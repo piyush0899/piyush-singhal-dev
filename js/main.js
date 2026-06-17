@@ -1,10 +1,4 @@
-/* ═══════════════════════════════════════════════════════
-   Piyush Singhal Portfolio — main.js
-   Features: loader · particles · cursor · typewriter ·
-             skill bars · card tilt · scroll progress ·
-             reveal · counters · magnetic buttons · nav
-   ═══════════════════════════════════════════════════════ */
-
+/* © 2025 Piyush Singhal · All rights reserved · piyush-singhal-dev.netlify.app */
 (function () {
   "use strict";
 
@@ -149,7 +143,6 @@
     }
     animRing();
 
-    /* Hover effect on interactive elements */
     document.querySelectorAll("a, button, .tilt, .stag").forEach(function (el) {
       el.addEventListener("mouseenter", function () { document.body.classList.add("hovering"); });
       el.addEventListener("mouseleave", function () { document.body.classList.remove("hovering"); });
@@ -191,7 +184,6 @@
 
     function drawParticles() {
       ctx.clearRect(0, 0, W, H);
-      /* Draw connections */
       for (var i = 0; i < particles.length; i++) {
         for (var j = i + 1; j < particles.length; j++) {
           var dx = particles[i].x - particles[j].x;
@@ -207,7 +199,6 @@
           }
         }
       }
-      /* Draw dots */
       particles.forEach(function (p) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -215,7 +206,6 @@
         ctx.globalAlpha = p.alpha;
         ctx.fill();
         ctx.globalAlpha = 1;
-        /* Move */
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0 || p.x > W) p.vx *= -1;
         if (p.y < 0 || p.y > H) p.vy *= -1;
@@ -270,7 +260,7 @@
   }
 
   /* ════════════════════════════════
-     SCROLL REVEAL (IntersectionObserver)
+     SCROLL REVEAL
   ════════════════════════════════ */
   var revealEls = document.querySelectorAll("[data-reveal]");
   if ("IntersectionObserver" in window && !prefersReducedMotion) {
@@ -349,7 +339,7 @@
   }
 
   /* ════════════════════════════════
-     3D CARD TILT (project cards)
+     3D CARD TILT
   ════════════════════════════════ */
   if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
     document.querySelectorAll(".tilt").forEach(function (card) {
@@ -362,7 +352,6 @@
         var rx = ((y - cy) / cy) * -8;
         var ry = ((x - cx) / cx) *  8;
         card.style.transform = "perspective(800px) rotateX(" + rx + "deg) rotateY(" + ry + "deg) scale(1.02)";
-        /* Radial highlight */
         var pctX = (x / rect.width)  * 100;
         var pctY = (y / rect.height) * 100;
         card.style.setProperty("--mx", pctX + "%");
@@ -394,29 +383,22 @@
   }
 
   /* ════════════════════════════════
-     BACKEND API BASE URL
-     Local:      http://localhost:8081
-     Production: set window.PORTFOLIO_API before this script, or update below
+     BACKEND API
   ════════════════════════════════ */
   var API = window.PORTFOLIO_API || "https://portfolio-backend-piyush.up.railway.app";
 
-  /* ════════════════════════════════
-     VISITOR COUNTER
-  ════════════════════════════════ */
   var visitEl = document.getElementById("visitCount");
   fetch(API + "/api/visits", { method: "POST" })
     .then(function (r) { return r.json(); })
     .then(function (d) {
-      if (visitEl && d.visits) {
-        visitEl.textContent = d.visits.toLocaleString();
-      }
+      if (visitEl && d.visits) visitEl.textContent = d.visits.toLocaleString();
     })
     .catch(function () {
       if (visitEl) visitEl.textContent = "—";
     });
 
   /* ════════════════════════════════
-     CONTACT FORM SUBMISSION
+     CONTACT FORM
   ════════════════════════════════ */
   var contactForm = document.getElementById("contactForm");
   var feedback    = document.getElementById("formFeedback");
@@ -430,28 +412,21 @@
       var emailEl = contactForm.querySelector("[name='email']");
       var msgEl   = contactForm.querySelector("[name='message']");
 
-      /* Clear previous states */
       [nameEl, emailEl, msgEl].forEach(function (el) { el.classList.remove("invalid"); });
       feedback.className = "form-feedback";
       feedback.classList.remove("show");
 
-      /* Client-side validation */
       var valid = true;
       if (!nameEl.value.trim())  { nameEl.classList.add("invalid");  valid = false; }
       if (!emailEl.value.trim() || !emailEl.value.includes("@")) {
         emailEl.classList.add("invalid"); valid = false;
       }
       if (!msgEl.value.trim())   { msgEl.classList.add("invalid");   valid = false; }
-      if (!valid) {
-        showFeedback("error", "Please fill in all fields correctly.");
-        return;
-      }
+      if (!valid) { showFeedback("error", "Please fill in all fields correctly."); return; }
 
-      /* Loading state */
       submitBtn.classList.add("loading");
       submitBtn.disabled = true;
 
-      /* Add spinner element if not present */
       if (!submitBtn.querySelector(".spinner")) {
         var sp = document.createElement("span");
         sp.className = "spinner";
@@ -464,7 +439,6 @@
         message: msgEl.value.trim()
       });
 
-      /* 5 second timeout so we don't hang if backend is down */
       var controller = new AbortController();
       var timer = setTimeout(function () { controller.abort(); }, 5000);
 
@@ -486,16 +460,12 @@
         })
         .catch(function () {
           clearTimeout(timer);
-          /* Backend offline — open a pre-filled Gmail compose window */
           var name    = nameEl.value.trim();
           var email   = emailEl.value.trim();
           var message = msgEl.value.trim();
           var subject = encodeURIComponent("Portfolio Contact from " + name);
-          var body    = encodeURIComponent(
-            "Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message
-          );
-          var mailtoLink = "mailto:singhalpiyush614@gmail.com?subject=" + subject + "&body=" + body;
-          window.location.href = mailtoLink;
+          var body    = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message);
+          window.location.href = "mailto:singhalpiyush614@gmail.com?subject=" + subject + "&body=" + body;
           showFeedback("success", "Opening your email app to send directly...");
         })
         .finally(function () {
