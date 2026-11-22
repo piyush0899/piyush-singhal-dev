@@ -225,11 +225,11 @@
   var twEl = document.getElementById("typewriter");
   if (twEl) {
     var phrases = [
-      "Java Backend Developer",
+      "Senior Java Backend Engineer",
       "Spring Boot Architect",
-      "REST API Engineer",
+      "Event-Driven Systems Builder",
       "Microservices Specialist",
-      "Performance Optimiser"
+      "Kafka & AWS Engineer"
     ];
     var pi = 0, ci = 0, deleting = false;
 
